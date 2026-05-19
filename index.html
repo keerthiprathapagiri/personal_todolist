@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personal_TODO — Your Personal Task Garden</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body class="theme-neutral" data-theme="light">
+
+  <!-- ===== FLOATING PARTICLES ===== -->
+  <div id="particles-container"></div>
+
+  <!-- ===== AUTH PAGES ===== -->
+  <div id="auth-section">
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="auth-page active-auth">
+      <div class="auth-card">
+        <div class="auth-brand">
+          <div class="brand-icon">🌸</div>
+          <h1 class="brand-name">Personal_TODO</h1>
+          <p class="brand-tagline">Your personal task garden</p>
+        </div>
+        <div class="auth-form">
+          <h2>Welcome Back</h2>
+          <p class="form-subtitle">Sign in to continue your journey</p>
+          <div class="input-group">
+            <i class="fa fa-envelope"></i>
+            <input type="email" id="login-email" placeholder="Email address" autocomplete="email"/>
+          </div>
+          <div class="input-group">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="login-password" placeholder="Password" autocomplete="current-password"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('login-password', this)"><i class="fa fa-eye"></i></button>
+          </div>
+          <div id="login-error" class="auth-error hidden"></div>
+          <button class="btn-primary" onclick="loginUser()">Sign In <i class="fa fa-arrow-right"></i></button>
+          <p class="auth-switch">Don't have an account? <a onclick="showPage('register-page')">Create one</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="register-page" class="auth-page">
+      <div class="auth-card">
+        <div class="auth-brand">
+          <div class="brand-icon">🌱</div>
+          <h1 class="brand-name">Personal_TODO</h1>
+          <p class="brand-tagline">Start your journey today</p>
+        </div>
+        <div class="auth-form">
+          <h2>Create Account</h2>
+          <p class="form-subtitle">Join and bloom with your tasks</p>
+          <div class="input-group">
+            <i class="fa fa-user"></i>
+            <input type="text" id="reg-name" placeholder="Full name"/>
+          </div>
+          <div class="input-group">
+            <i class="fa fa-envelope"></i>
+            <input type="email" id="reg-email" placeholder="Email address"/>
+          </div>
+          <div class="input-group">
+            <i class="fa fa-lock"></i>
+            <input type="password" id="reg-password" placeholder="Password (min 6 chars)"/>
+            <button type="button" class="toggle-pw" onclick="togglePassword('reg-password', this)"><i class="fa fa-eye"></i></button>
+          </div>
+          <div class="gender-select">
+            <p>I identify as</p>
+            <div class="gender-options">
+              <label class="gender-card" id="gender-male-label">
+                <input type="radio" name="gender" value="male" id="gender-male" onchange="selectGender('male')"/>
+                <span class="gender-icon">👨</span>
+                <span>Male</span>
+              </label>
+              <label class="gender-card" id="gender-female-label">
+                <input type="radio" name="gender" value="female" id="gender-female" onchange="selectGender('female')"/>
+                <span class="gender-icon">👩</span>
+                <span>Female</span>
+              </label>
+            </div>
+          </div>
+          <div id="reg-error" class="auth-error hidden"></div>
+          <button class="btn-primary" onclick="registerUser()">Create Account <i class="fa fa-seedling"></i></button>
+          <p class="auth-switch">Already have an account? <a onclick="showPage('login-page')">Sign in</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /auth-section -->
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dashboard-section" class="hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div class="sidebar-brand">
+        <span class="sb-icon">🌸</span>
+        <span class="sb-name">Personal_TODO</span>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sb-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">User</div>
+          <div class="user-email" id="sb-email">user@mail.com</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" onclick="showSection('overview')" data-section="overview">
+          <i class="fa fa-home"></i><span>Dashboard</span>
+        </a>
+        <a class="nav-item" onclick="showSection('tasks')" data-section="tasks">
+          <i class="fa fa-list-check"></i><span>All Tasks</span>
+        </a>
+        <a class="nav-item" onclick="showSection('important')" data-section="important">
+          <i class="fa fa-star"></i><span>Important</span>
+        </a>
+        <a class="nav-item" onclick="showSection('upcoming')" data-section="upcoming">
+          <i class="fa fa-clock"></i><span>Upcoming</span>
+        </a>
+        <a class="nav-item" onclick="showSection('completed')" data-section="completed">
+          <i class="fa fa-circle-check"></i><span>Completed</span>
+        </a>
+        <a class="nav-item" onclick="showSection('categories')" data-section="categories">
+          <i class="fa fa-tags"></i><span>Categories</span>
+        </a>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle dark mode">
+          <i class="fa fa-moon" id="theme-icon"></i>
+          <span id="theme-label">Dark Mode</span>
+        </button>
+        <button class="logout-btn" onclick="logoutUser()">
+          <i class="fa fa-right-from-bracket"></i><span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+        <div class="search-bar">
+          <i class="fa fa-search"></i>
+          <input type="text" id="search-input" placeholder="Search tasks..." oninput="searchTasks()"/>
+        </div>
+        <div class="topbar-right">
+          <button class="notif-btn" onclick="checkNotifications()" title="Notifications">
+            <i class="fa fa-bell"></i>
+            <span class="notif-badge hidden" id="notif-badge">0</span>
+          </button>
+          <div class="topbar-avatar" id="topbar-avatar">A</div>
+        </div>
+      </header>
+
+      <!-- SECTIONS -->
+
+      <!-- OVERVIEW / DASHBOARD -->
+      <section id="section-overview" class="content-section active-section">
+        <div class="section-header">
+          <div>
+            <h2 id="greeting-text">Good morning!</h2>
+            <p id="motivational-quote" class="subtitle-quote">Loading your daily spark...</p>
+          </div>
+          <button class="btn-add-task" onclick="openTaskModal()">
+            <i class="fa fa-plus"></i> New Task
+          </button>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card" data-color="total">
+            <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-total">0</div>
+              <div class="stat-label">Total Tasks</div>
+            </div>
+          </div>
+          <div class="stat-card" data-color="completed">
+            <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-completed">0</div>
+              <div class="stat-label">Completed</div>
+            </div>
+          </div>
+          <div class="stat-card" data-color="pending">
+            <div class="stat-icon"><i class="fa fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-pending">0</div>
+              <div class="stat-label">Pending</div>
+            </div>
+          </div>
+          <div class="stat-card" data-color="progress">
+            <div class="stat-icon"><i class="fa fa-chart-pie"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-percent">0%</div>
+              <div class="stat-label">Progress</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-card">
+          <div class="progress-header">
+            <span>Overall Progress</span>
+            <span id="progress-label">0 / 0 tasks</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Two-column: Important & Upcoming -->
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <h3><i class="fa fa-star"></i> Important Tasks</h3>
+              <a onclick="showSection('important')">See all</a>
+            </div>
+            <div id="overview-important" class="task-mini-list"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <h3><i class="fa fa-clock"></i> Upcoming Deadlines</h3>
+              <a onclick="showSection('upcoming')">See all</a>
+            </div>
+            <div id="overview-upcoming" class="task-mini-list"></div>
+          </div>
+        </div>
+
+        <!-- Recent Tasks -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fa fa-list"></i> Recent Tasks</h3>
+            <a onclick="showSection('tasks')">See all</a>
+          </div>
+          <div id="overview-recent" class="task-list"></div>
+        </div>
+      </section>
+
+      <!-- ALL TASKS -->
+      <section id="section-tasks" class="content-section">
+        <div class="section-header">
+          <h2>All Tasks</h2>
+          <button class="btn-add-task" onclick="openTaskModal()"><i class="fa fa-plus"></i> New Task</button>
+        </div>
+        <div class="filter-bar">
+          <select id="filter-category" onchange="renderAllTasks()">
+            <option value="all">All Categories</option>
+            <option value="study">📚 Study</option>
+            <option value="work">💼 Work</option>
+            <option value="personal">🧘 Personal</option>
+            <option value="health">🏃 Health</option>
+            <option value="other">✨ Other</option>
+          </select>
+          <select id="sort-tasks" onchange="renderAllTasks()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="due-asc">Due Date ↑</option>
+            <option value="due-desc">Due Date ↓</option>
+            <option value="priority">Priority First</option>
+          </select>
+        </div>
+        <div id="all-tasks-list" class="task-list"></div>
+      </section>
+
+      <!-- IMPORTANT -->
+      <section id="section-important" class="content-section">
+        <div class="section-header">
+          <h2><i class="fa fa-star"></i> Important Tasks</h2>
+          <button class="btn-add-task" onclick="openTaskModal()"><i class="fa fa-plus"></i> New Task</button>
+        </div>
+        <div id="important-tasks-list" class="task-list"></div>
+      </section>
+
+      <!-- UPCOMING -->
+      <section id="section-upcoming" class="content-section">
+        <div class="section-header">
+          <h2><i class="fa fa-clock"></i> Upcoming Tasks</h2>
+        </div>
+        <div id="upcoming-tasks-list" class="task-list"></div>
+      </section>
+
+      <!-- COMPLETED -->
+      <section id="section-completed" class="content-section">
+        <div class="section-header">
+          <h2><i class="fa fa-circle-check"></i> Completed Tasks</h2>
+          <button class="btn-danger" onclick="clearCompleted()"><i class="fa fa-trash"></i> Clear All</button>
+        </div>
+        <div id="completed-tasks-list" class="task-list"></div>
+      </section>
+
+      <!-- CATEGORIES -->
+      <section id="section-categories" class="content-section">
+        <div class="section-header"><h2><i class="fa fa-tags"></i> Categories</h2></div>
+        <div class="categories-grid" id="categories-grid"></div>
+      </section>
+
+    </main>
+  </div><!-- /dashboard-section -->
+
+  <!-- ===== ADD / EDIT TASK MODAL ===== -->
+  <div id="task-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">New Task</h3>
+        <button class="modal-close" onclick="closeTaskModal()"><i class="fa fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Task Title *</label>
+            <input type="text" id="task-title" placeholder="What needs to be done?"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Description</label>
+            <textarea id="task-desc" placeholder="Add details..." rows="3"></textarea>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="form-field">
+            <label>Category</label>
+            <select id="task-category">
+              <option value="study">📚 Study</option>
+              <option value="work">💼 Work</option>
+              <option value="personal">🧘 Personal</option>
+              <option value="health">🏃 Health</option>
+              <option value="other">✨ Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Priority</label>
+            <select id="task-priority">
+              <option value="low">🟢 Low</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="high">🔴 High</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="form-field">
+            <label>Due Date</label>
+            <input type="date" id="task-date"/>
+          </div>
+          <div class="form-field">
+            <label>Due Time</label>
+            <input type="time" id="task-time"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="star-toggle">
+            <input type="checkbox" id="task-star"/>
+            <span class="star-label"><i class="fa fa-star"></i> Mark as Important</span>
+          </label>
+        </div>
+        <div id="modal-error" class="auth-error hidden"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeTaskModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveTask()">
+          <i class="fa fa-floppy-disk"></i> Save Task
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONFETTI CANVAS ===== -->
+  <canvas id="confetti-canvas" class="hidden"></canvas>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast-container"></div>
+
+  <!-- Sidebar overlay for mobile -->
+  <div id="sidebar-overlay"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
